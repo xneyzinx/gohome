@@ -18,7 +18,7 @@ package br.com.ufpi.engenharia;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button signOut;
+    private Button signOut, mostrarNoMapa;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
 
@@ -52,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signOut();
+            }
+        });
+
+        mostrarNoMapa = (Button) findViewById(R.id.mostrar_imoveis_no_mapa);
+        mostrarNoMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MapsLocationActivity.class));
             }
         });
 

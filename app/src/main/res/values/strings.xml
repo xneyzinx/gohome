@@ -31,4 +31,5 @@
     <string name="btn_novo_imovel">Cadastrar Imóvel</string>
     <string name="btn_listar_imoveis">Listar Imóveis</string>
     <string name="btn_mostrar_no_mapa">Mostrar Imóveis no Mapa</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
