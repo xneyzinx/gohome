@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "459750178542",
+    "firebase_url": "https://engenharia-412cc.firebaseio.com",
+    "project_id": "engenharia-412cc",
+    "storage_bucket": "engenharia-412cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459750178542:android:36969b47ae9075ea",
+        "android_client_info": {
+          "package_name": "br.com.ufpi.engenharia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "459750178542-hlhprlughjcmr5341oquhp1hap74f3rr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRrsteXNgXo24c7-Wz1u1Jtezll8ZQtjg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
