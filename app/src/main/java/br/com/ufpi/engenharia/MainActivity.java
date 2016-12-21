@@ -18,15 +18,70 @@ package br.com.ufpi.engenharia;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button signOut, mostrarNoMapa;
+    private Button signOut, mostrarNoMapa, listarImoveis;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    private Button cadastrarImovel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setFirebase();
 
+
+        signOutButton();
+        cadastrarImovelButton();
+        listarImoveisButton();
+
+        mostrarNoMapaButton();
+
+    }
+
+    private void listarImoveisButton() {
+
+        listarImoveis = (Button) findViewById(R.id.listar_imoveis);
+        listarImoveis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ListaImoveisActivity.class));
+            }
+        });
+
+    }
+
+    private void cadastrarImovelButton() {
+        cadastrarImovel = (Button) findViewById(R.id.cadastrar_imovel);
+        cadastrarImovel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CadastrarImovelActivity.class));
+            }
+        });
+    }
+
+    private void mostrarNoMapaButton() {
+        mostrarNoMapa = (Button) findViewById(R.id.mostrar_imoveis_no_mapa);
+        mostrarNoMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MapsLocationActivity.class));
+            }
+        });
+    }
+
+    private void signOutButton() {
+        signOut = (Button) findViewById(R.id.sign_out);
+
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+    }
+
+    private void setFirebase() {
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
 
@@ -45,24 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
-        signOut = (Button) findViewById(R.id.sign_out);
-
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
-
-        mostrarNoMapa = (Button) findViewById(R.id.mostrar_imoveis_no_mapa);
-        mostrarNoMapa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MapsLocationActivity.class));
-            }
-        });
-
     }
 
     //sign out method

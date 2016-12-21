@@ -1,0 +1,26 @@
+----------------------------------------------------------------
+| Projeto GoHome		   - Release Note - 21/12/2016 |
+----------------------------------------------------------------
+
+Lista de Funcionalidade da release
+--------------------------------------------------------
+*Login do usuário
+*Cadastrar Imóvel
+*Listar imóveis
+*Mostrar imóvel no mapa
+
+Artefatos Gerados
+--------------------------------------------------------
+*Javadocs
+
+https://github.com/xneyzinx/gohome.git
+
+Procedimentos para baixar o projeto
+--------------------------------------------------------
+1. Projeto desenvolvido no Android Studio
+2. File-> New -> Project Version Control -> GitHub
+3. Entre com a senha de acesso do GitHub
+4. Preencha o campo com o URL do repositório do GitHub e clique para clonar o repositório
+
+
+
