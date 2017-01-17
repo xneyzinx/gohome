@@ -18,6 +18,13 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
+        <ImageView
+            android:layout_width="@dimen/logo_w_h"
+            android:layout_height="@dimen/logo_w_h"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="30dp"
+            android:src="@mipmap/ic_launcher" />
+
         <Button
             android:id="@+id/sign_out"
             style="?android:textAppearanceSmall"
