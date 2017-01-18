@@ -12,6 +12,7 @@ import java.util.List;
 
 import br.com.ufpi.engenharia.DAOs.ImovelDAO;
 import br.com.ufpi.engenharia.ListaImoveisActivity;
+import br.com.ufpi.engenharia.ResultadosBuscaActivity;
 import br.com.ufpi.engenharia.entidade.Imovel;
 
 /**
@@ -19,7 +20,7 @@ import br.com.ufpi.engenharia.entidade.Imovel;
  */
 public class ControleImovel {
 
-    List<Imovel> imoveis = null;
+    List<Imovel> imoveis;
     Context context;
     ArrayList<Imovel> i = new ArrayList<>();
 
@@ -37,8 +38,99 @@ public class ControleImovel {
         imoveis = dao.buscaImoveis();
         dao.close();
         return imoveis;
+    }
+
+    /***
+     * Busca os imoveis de acordo com os parametros passados
+     * @param valorMaximo
+     * @param quantidadeDeQuartos
+     * @param bairro
+     * @return
+     */
+    public List<Imovel> buscarImovel(int valorMaximo, int quantidadeDeQuartos, String bairro){
+        ImovelDAO dao = new ImovelDAO(context);
+        imoveis = dao.buscaImoveisPorValorQuantidadeDeQuartosBairro(valorMaximo, quantidadeDeQuartos, bairro);
+        dao.close();
+        return imoveis;
+    }
+
+
+    /***
+     * Busca imóveis até um valor máximo limite
+     * @param valorMaximo
+     * @return
+     */
+    public List<Imovel> buscarImovel(int valorMaximo){
+        ImovelDAO dao = new ImovelDAO(context);
+        imoveis = dao.buscaImoveisPorValor(valorMaximo);
+        dao.close();
+        return imoveis;
+    }
+
+
+    /***
+     * Busca imóveis por valor e quantidade de quartos
+     * @param valorMaximo
+     * @param quantidadeDeQuartos
+     * @return
+     */
+    public List<Imovel> buscarImovel(int valorMaximo, int quantidadeDeQuartos){
+        ImovelDAO dao = new ImovelDAO(context);
+        imoveis = dao.buscaImoveisPorValorEQuartos(valorMaximo, quantidadeDeQuartos);
+        dao.close();
+        return imoveis;
+    }
+
+
+    /***
+     * Busca imóveis por e bairro
+     * @param valorMaximo
+     * @param bairro
+     * @return
+     */
+    public List<Imovel> buscarImovel(int valorMaximo, String bairro){
+        ImovelDAO dao = new ImovelDAO(context);
+        imoveis = dao.buscaImoveisPorValorEBairro(valorMaximo, bairro);
+        dao.close();
+        return imoveis;
+    }
+
+
+    /***
+     * Adiciona um imóvel ao usuário, tanto no banco local como no firebase
+     * @param imovel
+     * @param mDatabase
+     * @param mUserId
+     */
+    public void addImovel(Imovel imovel, DatabaseReference mDatabase, String mUserId) {
+
+        mDatabase.child("users").child(mUserId).child("imoveis").setValue(imovel);
+        ImovelDAO dao = new ImovelDAO(context);
+        dao.insere(imovel);
+        dao.close();
 
     }
+
+    // PEGA SO 1 IMOVEL
+    /*
+    public Imovel getImovelFirebase(DatabaseReference mDatabase, final String mUserId){
+        final Imovel[] imovel = {new Imovel()};
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                imovel[0] = dataSnapshot.child("users").child(mUserId).child("imoveis").getValue(Imovel.class);
+                if(imovel[0] ==null)
+                    return;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return imovel[0];
+    }
+    */
 
     /***
      * Adiciona um imóvel ao usuário no banco local
@@ -156,4 +248,12 @@ public class ControleImovel {
         dao.altera(imovel);
         dao.close();
     }
+
+    public void aluga(Imovel imovel, ResultadosBuscaActivity listaImoveisActivity) {
+        ImovelDAO dao = new ImovelDAO(context);
+        dao.aluga(imovel);
+        dao.close();
+    }
+
+
 }
