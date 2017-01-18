@@ -1,13 +1,13 @@
 package br.com.ufpi.engenharia.controle;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.ufpi.engenharia.DAOs.ImovelDAO;
@@ -19,8 +19,9 @@ import br.com.ufpi.engenharia.entidade.Imovel;
  */
 public class ControleImovel {
 
-    List<Imovel> imoveis;
+    List<Imovel> imoveis = null;
     Context context;
+    ArrayList<Imovel> i = new ArrayList<>();
 
 
     public ControleImovel(Context context){
@@ -40,14 +41,13 @@ public class ControleImovel {
     }
 
     /***
-     * Adiciona um imóvel ao usuário, tanto no banco local como no firebase
-     * @param imovel
-     * @param mDatabase
-     * @param mUserId
+     * Adiciona um imóvel ao usuário no banco local
+     *
      */
-    public void addImovel(Imovel imovel, DatabaseReference mDatabase, String mUserId) {
+    public void addImovel(Imovel imovel) {
 
-        mDatabase.child("users").child(mUserId).child("imoveis").setValue(imovel);
+        //mDatabase.child("imoveis").push().setValue(imovel);
+
         ImovelDAO dao = new ImovelDAO(context);
         dao.insere(imovel);
         dao.close();
@@ -75,53 +75,47 @@ public class ControleImovel {
     }
     */
 
+    public void retrieveDados(DataSnapshot dataSnapshot){
+
+        i.clear();
+
+        for(DataSnapshot ds : dataSnapshot.getChildren()){
+            Imovel im = ds.getValue(Imovel.class);
+            i.add(im);
+        }
+    }
     /***
      * Em desenvolvimento: retorna todos os imóveis cadastrados pelo usuário no servidor Firebase.
-     * @param context
      * @param mDatabase
      * @param mUserId
      * @return
      */
-    public List<Imovel> buscaImoveisFirebase(Context context, DatabaseReference mDatabase, final String mUserId) {
+    public List<Imovel> buscaImoveisFirebase(DatabaseReference mDatabase, final String mUserId) {
+
+
+        final List<Imovel> i = new ArrayList<Imovel>();
 
         // Get a reference to our
-        mDatabase = mDatabase.getDatabase().getReference("users/" + mUserId + "/imoveis");
+        mDatabase = mDatabase.getDatabase().getReference();
 
-// Attach a listener to read the data at our posts reference
-
-       /* mDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabase.child("imoveis").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Imovel imovel = dataSnapshot.getValue(Imovel.class);
-                imoveis.add(imovel);
-                System.out.println(imovel);
-            }
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });*/
-
-
-       /*mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Log.e("Count " ,""+snapshot.getChildrenCount());
-                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                    Imovel imovel = postSnapshot.getValue(Imovel.class);
-                    imoveis.add(imovel);
-                    //Log.e("Get Data", roupa.<YourMethod>());
+                for (DataSnapshot child : children) {
+                    Imovel im = child.getValue(Imovel.class);
+                    i.add(im);
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("The read failed: " );
-            }
-        });*/
+            public void onCancelled(DatabaseError databaseError) {
 
-        return imoveis;
+            }
+        });
+
+        return i;
 
     }
 
@@ -135,6 +129,20 @@ public class ControleImovel {
         ImovelDAO dao = new ImovelDAO(context);
         dao.deleta(imovel);
         dao.close();
+    }
+
+    /*
+    * Método de busca para apenas 1 imóvel
+    * @param nomeImovel
+    * @return Imovel
+    * */
+    public Imovel busca(String nomeImovel){
+        ImovelDAO dao = new ImovelDAO(context);
+        Imovel i = new Imovel();
+        i = dao.buscaImovel(nomeImovel);
+        dao.close();
+
+        return i;
     }
 
     /***

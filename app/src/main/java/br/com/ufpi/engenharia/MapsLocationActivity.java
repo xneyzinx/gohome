@@ -1,7 +1,8 @@
 package br.com.ufpi.engenharia;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,11 +11,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import br.com.ufpi.engenharia.R;
+import br.com.ufpi.engenharia.controle.ControleImovel;
+
+/*
+* Método para mostrar apenas 1 imóvel selecionado no mapa
+*
+* */
 
 public class MapsLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private ControleImovel controleImovel = new ControleImovel(MapsLocationActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,19 +33,28 @@ public class MapsLocationActivity extends FragmentActivity implements OnMapReady
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Shot the map for the current location
-     * @param googleMap
-     */
+    /*
+    * Método para mostrar o imóvel no mapa
+    * @param googleMap
+    * */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        double dLatitude;
+        double dLongitude;
+        String nomeI;
+
+        Intent iR = this.getIntent();
+        dLatitude = iR.getDoubleExtra("doubleLatitude", 0.0);
+        dLongitude = iR.getDoubleExtra("doubleLongitude", 0.0);
+        nomeI = iR.getStringExtra(ListaImoveisActivity.nomeImovel);
+
         // Add a marker in Sydney and move the camera
-        LatLng depcomp = new LatLng(-5.056294, -42.789921);
-        mMap.addMarker(new MarkerOptions().title("Departamento de Computação").snippet("Prédio do Departamento de Computação").position(depcomp));
+        LatLng latlongImovel = new LatLng(dLatitude, dLongitude);
+
+        mMap.addMarker(new MarkerOptions().title(nomeI).snippet("").position(latlongImovel));
 //        mMap.moveCamera(CameraUpdateFactory.zoomTo(4.0f));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(depcomp, 17.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlongImovel, 17.0f));
     }
 }
