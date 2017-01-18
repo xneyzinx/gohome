@@ -44,7 +44,10 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".CadastrarImovelActivity" />
-        <activity android:name=".ListaImoveisActivity"></activity>
+        <activity android:name=".ListaImoveisActivity"/>
+        <activity android:name=".BuscarImoveisActivity" />
+        <activity android:name=".ResultadosBuscaActivity"></activity>
+
     </application>
 
 </manifest>
