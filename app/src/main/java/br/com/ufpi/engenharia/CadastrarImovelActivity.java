@@ -1,39 +1,42 @@
 package br.com.ufpi.engenharia;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-//import com.google.android.gms.common
+import java.io.IOException;
+import java.util.List;
 
 import br.com.ufpi.engenharia.controle.ControleImovel;
 import br.com.ufpi.engenharia.entidade.Imovel;
 
+//import com.google.android.gms.common
 
+
+/*
+* Método de cadastrar Imovel
+* */
 public class CadastrarImovelActivity extends AppCompatActivity {
 
     private String nomeImovel;
     private double valor;
     private String endereco;
+    private String bairro;
+    private int quantidade_de_quartos;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     private DatabaseReference mDatabase;
@@ -42,6 +45,8 @@ public class CadastrarImovelActivity extends AppCompatActivity {
     private Location mLastLocation;
     private Imovel imovel = new Imovel();
     ControleImovel controleImovel = new ControleImovel(CadastrarImovelActivity.this);
+    TextView latLongTV;
+    static String ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,13 +123,13 @@ public class CadastrarImovelActivity extends AppCompatActivity {
     }
 
     private void botaoLocalizacao() {
-            Button local = (Button) findViewById(R.id.local);
-            local.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(CadastrarImovelActivity.this, MapsTesteActivity.class));
-                }
-            });
+        Button local = (Button) findViewById(R.id.local);
+        local.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CadastrarImovelActivity.this, MapsTesteActivity.class));
+            }
+        });
     }
 
 
@@ -135,19 +140,46 @@ public class CadastrarImovelActivity extends AppCompatActivity {
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 nomeImovel = ((EditText) findViewById(R.id.nome_imovel)).getText().toString();
                 valor = Double.parseDouble(((EditText) findViewById(R.id.valor)).getText().toString());
                 endereco = ((EditText) findViewById(R.id.endereco)).getText().toString();
+                bairro = ((EditText) findViewById(R.id.bairro)).getText().toString();
+                quantidade_de_quartos = Integer.parseInt(((EditText) findViewById(R.id.quantidade_de_quartos)).getText().toString());
+
+
+                /*
+                * Busca das coordenadas de latitude e longitude
+                * a partir do endereço dado no cadastro
+                * */
+                double latitude = 0;
+                double longitude = 0;
+                Geocoder geocoder = new Geocoder(getApplicationContext());
+                List<android.location.Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocationName(endereco, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(addresses.size() > 0) {
+                    latitude= addresses.get(0).getLatitude();
+                    longitude= addresses.get(0).getLongitude();
+                }
+
+
                 Imovel imovel = new Imovel();
                 imovel.setNome(nomeImovel);
                 imovel.setValor(valor);
                 imovel.setEndereco(endereco);
-                //location
-                //imovel.setLocal(location);
-                controleImovel.addImovel(imovel, mDatabase, mUserId);
+                imovel.setBairro(bairro);
+                imovel.setQuantidade_de_quartos(quantidade_de_quartos);
+
+                imovel.setLatA(latitude);
+                imovel.setLongA(longitude);
+
+                controleImovel.addImovel(imovel);
                 Toast.makeText(getApplicationContext(),"Imóvel: " + imovel.getNome() + " Salvo!", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(InfoLojaActivity.this, HomeActivity.class);
-                //startActivity(intent);
+
                 finish();
 
             }
