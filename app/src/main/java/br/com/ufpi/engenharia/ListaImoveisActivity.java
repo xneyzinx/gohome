@@ -2,12 +2,9 @@ package br.com.ufpi.engenharia;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -16,18 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +38,7 @@ public class ListaImoveisActivity extends AppCompatActivity {
     private ListView listView = null;
     private List<Imovel> imoveis = null;
     private ControleImovel controleImovel = new ControleImovel(ListaImoveisActivity.this);
+    public final static String nomeImovel = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +73,7 @@ public class ListaImoveisActivity extends AppCompatActivity {
             TextView valor;
             TextView status;
 
+
             public ViewHolder(View view) {
 
                 nome = (TextView) view.findViewById(R.id.lista_nome_imovel);
@@ -112,19 +106,7 @@ public class ListaImoveisActivity extends AppCompatActivity {
             holder.endereco.setText(listaImoveis2.get(position).getEndereco());
             holder.valor.setText( String.valueOf(listaImoveis2.get(position).getValor()));
             holder.status.setText(listaImoveis2.get(position).isAlugado()? "Alugado":"Disponível");
-            /*
-            Bitmap bitmap = null;
-            try {
-                byte[] fotoEmBytes = Base64.decode(listaRoupas2.get(position).getFoto(), Base64.DEFAULT);
-                bitmap = BitmapFactory.decodeByteArray(fotoEmBytes, 0, fotoEmBytes.length);
-            }catch(Exception e){
-
-            }
-            if(bitmap!=null)
-                holder.imageView.setImageBitmap(bitmap);
-            */
-
-            //holder.imageView.setImageResource(listaRoupas2.get(position).getFoto());
+           
             return view;
         }
     }
@@ -133,6 +115,7 @@ public class ListaImoveisActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, final ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuItem deletar = menu.add("Deletar");
+        MenuItem detalhes = menu.add("Mostra no Mapa");
         deletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -145,6 +128,22 @@ public class ListaImoveisActivity extends AppCompatActivity {
                 listView = (ListView) findViewById(R.id.list_view_tela_lista_imoveis);
                 // Assign adapter to ListView
                 listView.setAdapter(dataAdapter);
+                return false;
+            }
+        });
+
+        detalhes.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Imovel novoImovel;
+                Intent i = new Intent(ListaImoveisActivity.this, MapsLocationActivity.class);
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                Imovel imovel = (Imovel) listView.getItemAtPosition(info.position);
+
+                i.putExtra(nomeImovel, imovel.getNome());
+                i.putExtra("doubleLatitude", imovel.getLatA());
+                i.putExtra("doubleLongitude", imovel.getLongA());
+                startActivity(i);
                 return false;
             }
         });
